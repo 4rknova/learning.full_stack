@@ -1,5 +1,5 @@
 import React, {Component, useState} from 'react';
-import {Text, TouchableOpacity, Button, View, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, Image, Button, View, StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   root: {
@@ -71,12 +71,16 @@ const App = () => {
   
   return (
     <View style={[styles.root, styles.center]}>
-        <View style={[styles.container]}>
-          <Greeting name="Player 1" />
-          <Greeting name="Player 2" />
-          <Greeting name="Player 3" />
-        </View>
-        <Ticker/>
+      <Image
+        style={styles.tinyLogo}
+        source={require('./public/images/logo.png')}
+      />
+      <View style={[styles.container]}>
+        <Greeting name="Player 1" />
+        <Greeting name="Player 2" />
+        <Greeting name="Player 3" />
+      </View>
+      <Ticker/>
     </View>
   );
 };
