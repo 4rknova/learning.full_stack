@@ -1,6 +1,6 @@
 
-![Logo](./frontend/app/public/images/logo-dark.png#gh-dark-mode-only)
-![Logo](./frontend/app/public/images/logo-light.png#gh-ight-mode-only)
+![Logo](https://github.dev/4rknova/learning.full_stack/blob/9341369a3061636094ab4acc72bd4d27441a6354/frontend/app/public/images/logo-dark.png#gh-dark-mode-only)
+![Logo](https://github.dev/4rknova/learning.full_stack/blob/9341369a3061636094ab4acc72bd4d27441a6354/frontend/app/public/images/logo-light.png#gh-light-mode-only)
 
 # Brief
 
