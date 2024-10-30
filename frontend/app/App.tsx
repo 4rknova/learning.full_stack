@@ -1,36 +1,41 @@
 import React, {Component, useState} from 'react';
 import {Text, TouchableOpacity, Image, Button, View, StyleSheet} from 'react-native';
+import FadeIn from 'react-native-fade-in-image'
+
+const uri_logo = require('./public/images/logo.png');
 
 const styles = StyleSheet.create({
-  root: {
+  container_root:
+  {
     flex: 1,
+  },
+  container_logo:
+  {
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  container: {
-    backgroundColor: '#555',
-  },
-  center: {
+    backgroundColor: '#fff',
     alignItems: 'center',
   },
-  background: {
-    width:'50%',
+  container_ticker: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
   },
   text: {
     textAlign: 'center',
-    color: '#fff',
+    color: '#555',
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#DDD',
     padding: 10,
-    marginBottom: 10,
   },
+  logo: {
+    width: '75%',
+    resizeMode: 'contain',
+  }
 });
-
-type GreetingProps = {
-  name: string;
-};
 
 // ES6 class
 class Ticker extends Component {
@@ -46,22 +51,23 @@ class Ticker extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container_ticker}>
         <TouchableOpacity style={styles.button} onPress={this.onPress}>
-          <Text>Click me</Text>
+          <Text>Enter</Text>
         </TouchableOpacity>
-        <View>
-          <Text>You clicked {this.state.count} times</Text>
-        </View>
       </View>
     );
   }
 }
 
+type GreetingProps = {
+  message: string;
+};
+
 const Greeting = (props: GreetingProps) => {
   return (
-    <View style={styles.center, styles.background}>
-      <Text style={styles.text}>Hello {props.name}!</Text>
+    <View>
+      <Text style={styles.text}>{props.message}</Text>
     </View>
   );
 };
@@ -70,17 +76,18 @@ const App = () => {
   const [count, setCount] = useState(0);
   
   return (
-    <View style={[styles.root, styles.center]}>
-      <Image
-        style={styles.tinyLogo}
-        source={require('./public/images/logo.png')}
-      />
-      <View style={[styles.container]}>
-        <Greeting name="Player 1" />
-        <Greeting name="Player 2" />
-        <Greeting name="Player 3" />
+    <View style={[styles.container_root]}>
+      <View style={[styles.container_logo]}>
+        <Image
+          style={styles.logo}
+          source={uri_logo}
+        />
+        <Greeting message="Organise Your Day!" />
       </View>
-      <Ticker/>
+  
+      <View style={[styles.container_ticker]}>
+        <Ticker/>
+      </View>
     </View>
   );
 };
