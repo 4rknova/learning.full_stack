@@ -1,3 +1,6 @@
+
+![Logo](./frontend/app/public/images/logo.png "Logo")
+
 # Brief
 
 Create a todo list management app. 
