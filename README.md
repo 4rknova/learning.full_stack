@@ -1,5 +1,6 @@
 
-![Logo](./frontend/app/public/images/logo.png "Logo")
+![Logo](./frontend/app/public/images/logo-dark.png#gh-dark-mode-only)
+![Logo](./frontend/app/public/images/logo-light.png#gh-ight-mode-only)
 
 # Brief
 
