@@ -28,13 +28,11 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
       text={text}
       isChecked={isChecked}
       onPress={handleCheckboxPress}
-      size={25}
+      size={24}
       fillColor="#0f0"
-      unFillColor="#fff"
       text={text}
-      iconStyle={{ borderColor: "#ccc" }}
+      iconStyle={{ borderColor: "#fff" }}
       innerIconStyle={{ borderWidth: 2 }}
-      textStyle={{ fontFamily: "JosefinSans-Regular" }}
     />
     </View>
   );
@@ -43,19 +41,19 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
 const styles = StyleSheet.create({
   container: {
     margin: 1,
+    backgroundColor: "#fff",
   },
   checkbox: {
     width: "98%",
     paddingLeft: 4,
     height: 32,
-    backgroundColor: "#fefefefe",
     borderWidth: 1,
     borderBottomLeftRadius: 20,
     borderTopLeftRadius: 20,
     borderBottomRightRadius: 0,
     borderRadius: "72px",
     borderStyle: "none",
-    borderColor: "#ccc",
+    borderColor: "#dedede",
     margin: 0,
     marginTop: 5,
     marginLeft: 5,

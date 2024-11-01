@@ -1,5 +1,6 @@
 import React, {Component, useState} from 'react';
-import {Text, TouchableOpacity, Button, View, StyleSheet} from 'react-native';
+import {Text, TextInput, TouchableOpacity, Button, View, StyleSheet} from 'react-native';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -34,14 +35,14 @@ const MyStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Splash" component={ScreenSplash} options={{ headerShown: false }} />
+        <Stack.Screen name="Splash" component={ScreenSplash}
+            options={{ headerShown: false }} />
         <Stack.Screen name="Main" component={ScreenMain} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-interface AppProps {}
 
 const data = [
   {
@@ -109,7 +110,15 @@ const data = [
 const ScreenMain = ({navigation, route}) => {
 
   const [checkBoxes, setCheckBoxes] = useState(data);
+  const [text, onChangeText] = React.useState('');
 
+  const onPressSubmit = () => {
+    
+    let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text}
+    setCheckBoxes([...checkBoxes, newEntry])
+    console.log('You tapped the button! Added entry ID: ' + checkBoxes[checkBoxes.length-1].id)
+  }
+  
   const handleCheckboxPress = (checked: boolean, id: number) => {
     setCheckBoxes(
       checkBoxes.map(item =>
@@ -119,18 +128,33 @@ const ScreenMain = ({navigation, route}) => {
   };
 
   return (
-    <View style="container_root">
-      <React.Fragment>
-      {checkBoxes.map(item => (
-          <FilterCheckbox
-            id={item.id}
-            text={item.label}
-            key={`${item.id}`}
-            isChecked={item.isChecked}
-            onCheckboxPress={handleCheckboxPress}
-          />
-      ))}
-      </React.Fragment>
+    <View style={styles.container_root}>
+      <View style={styles.container_list}>
+        {checkBoxes.map(item => (
+            <FilterCheckbox
+              id={item.id}
+              text={item.label}
+              key={`${item.id}`}
+              isChecked={item.isChecked}
+              onCheckboxPress={handleCheckboxPress}
+            />
+        ))}
+      </View>
+      <View style={styles.container_editor}>
+        <SafeAreaProvider>
+          <SafeAreaView>
+            <TextInput
+              style={styles.input}
+              onChangeText={onChangeText}
+              value={text}
+            />
+          </SafeAreaView>
+        </SafeAreaProvider>
+        <Button
+          title="Submit"
+          onPress={onPressSubmit}
+        />
+      </View>
     </View>
   );
 }
@@ -138,6 +162,16 @@ const ScreenMain = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container_root:
   {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  container_list:
+  {
+    flex: 5,
+  },
+  container_editor:
+  {
+    backgroundColor: "#fff",
     flex: 1,
   },
   container_logo:
@@ -158,14 +192,24 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   button: {
-    alignItems: 'center',
-    backgroundColor: '#DDD',
-    padding: 10,
+    margin: 5,
+    backgroundColor: 'blue',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer'
   },
   logo: {
     width: '75%',
     resizeMode: 'contain',
-  }
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
 });
 
 export default MyStack;
