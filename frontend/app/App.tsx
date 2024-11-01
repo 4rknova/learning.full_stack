@@ -1,5 +1,5 @@
-import React, {Component, useState} from 'react';
-import {Text, TextInput, TouchableOpacity, Button, View, StyleSheet} from 'react-native';
+import React, {Component, useState, useEffect} from 'react';
+import {Text, TextInput, TouchableOpacity, Button, View, BackHandler, StyleSheet} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -14,18 +14,20 @@ const uri_logo = require('./public/images/logo-light.png');
 const Stack = createNativeStackNavigator();
 
 const ScreenSplash = ({navigation}) => {
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Main', {})
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
       <View style={[styles.container_root]}>
         <View style={[styles.container_logo]}>
           <ImageLoader style={styles.logo} source={uri_logo} />
         </View>
         <View style={[styles.container_ticker]}>
-          <Button
-            title="Continue"
-            onPress={() =>
-              navigation.navigate('Main', {})
-            }
-          />
         </View>
       </View>
   );
@@ -37,7 +39,8 @@ const MyStack = () => {
       <Stack.Navigator>
         <Stack.Screen name="Splash" component={ScreenSplash}
             options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={ScreenMain} />
+        <Stack.Screen name="Main" component={ScreenMain}
+            options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -112,8 +115,16 @@ const ScreenMain = ({navigation, route}) => {
   const [checkBoxes, setCheckBoxes] = useState(data);
   const [text, onChangeText] = React.useState('');
 
+  const backAction = () => {
+    return true;
+  };
+
+  const backHandler = BackHandler.addEventListener(
+    'hardwareBackPress',
+    backAction,
+  );
+
   const onPressSubmit = () => {
-    
     let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text}
     setCheckBoxes([...checkBoxes, newEntry])
     console.log('You tapped the button! Added entry ID: ' + checkBoxes[checkBoxes.length-1].id)
