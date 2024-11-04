@@ -1,39 +1,34 @@
-import React, {Component, useState, useEffect} from 'react';
-import {Text, TextInput, TouchableOpacity, Button, View, BackHandler, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {TextInput, Button, View, BackHandler, StyleSheet} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import ImageLoader from './src/component/ImageLoader.js';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
-
-
-const uri_logo = require('./public/images/logo-light.png');
+import {image_logo_light} from './src/images.ts';
 
 const Stack = createNativeStackNavigator();
 
-const ScreenSplash = ({navigation}) => {
+const ScreenSplash : React.FC<NavigationContainer> = ({navigation}) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('Main', {})
+      navigation.navigate('Main', {});
     }, 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigation]);
 
   return (
       <View style={[styles.container_root]}>
         <View style={[styles.container_logo]}>
-          <ImageLoader style={styles.logo} source={uri_logo} />
-        </View>
-        <View style={[styles.container_ticker]}>
+          <ImageLoader style={styles.logo} source={{uri: `data:image/png;base64,${image_logo_light}`}} />
         </View>
       </View>
   );
 };
 
-const MyStack = () => {
+const MyStack : React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -46,7 +41,6 @@ const MyStack = () => {
   );
 };
 
-
 const data = [
   {
     id: 0,
@@ -54,82 +48,25 @@ const data = [
     isChecked: false,
     value: '',
   },
-  {
-    id: 1,
-    label: 'Pre-Listing',
-    isChecked: false,
-    value: 'PreListing',
-  },
-  {
-    id: 2,
-    label: 'Offer Exclusive',
-    isChecked: false,
-    value: 'OfferExclusive',
-  },
-  {
-    id: 3,
-    label: 'Coming Soon',
-    isChecked: false,
-    value: 'ComingSoon',
-  },
-  {
-    id: 4,
-    label: 'Active Listings',
-    isChecked: false,
-    value: 'ActiveListing',
-  },
-  {
-    id: 5,
-    label: 'TNAS',
-    isChecked: false,
-    value: 'TNAS',
-  },
-  {
-    id: 6,
-    label: 'Under Contract',
-    isChecked: false,
-    value: 'Under contract',
-  },
-  {
-    id: 7,
-    label: 'Clear to Close',
-    isChecked: false,
-    value: 'Clear to close',
-  },
-  {
-    id: 8,
-    label: 'Closed',
-    isChecked: false,
-    value: 'Closed',
-  },
-  {
-    id: 9,
-    label: 'Cancelled',
-    isChecked: false,
-    value: 'Cancelled',
-  },
 ];
 
-const ScreenMain = ({navigation, route}) => {
-
+const ScreenMain = () => {
   const [checkBoxes, setCheckBoxes] = useState(data);
   const [text, onChangeText] = React.useState('');
 
   const backAction = () => {
     return true;
   };
-
-  const backHandler = BackHandler.addEventListener(
+  BackHandler.addEventListener(
     'hardwareBackPress',
     backAction,
   );
-
   const onPressSubmit = () => {
-    let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text}
-    setCheckBoxes([...checkBoxes, newEntry])
-    console.log('You tapped the button! Added entry ID: ' + checkBoxes[checkBoxes.length-1].id)
-  }
-  
+    let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text};
+    setCheckBoxes([...checkBoxes, newEntry]);
+    console.log('You tapped the button! Added entry ID: ' + checkBoxes[checkBoxes.length - 1].id);
+  };
+
   const handleCheckboxPress = (checked: boolean, id: number) => {
     setCheckBoxes(
       checkBoxes.map(item =>
@@ -168,30 +105,25 @@ const ScreenMain = ({navigation, route}) => {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container_root:
-  {
+  container_root: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
-  container_list:
-  {
+  container_list: {
     flex: 5,
   },
-  container_editor:
-  {
-    backgroundColor: "#fff",
+  container_editor: {
+    backgroundColor: '#fff',
     flex: 1,
   },
-  container_logo:
-  {
+  container_logo: {
     flex: 9,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    alignItems: 'center',
   },
   container_ticker: {
     flex: 1,
@@ -203,13 +135,13 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   button: {
-    margin: 5,
     backgroundColor: 'blue',
-    color: 'white',
-    padding: '10px 20px',
     border: 'none',
     borderRadius: '5px',
-    cursor: 'pointer'
+    color: 'white',
+    cursor: 'pointer',
+    margin: 5,
+    padding: '10px 20px',
   },
   logo: {
     width: '75%',
