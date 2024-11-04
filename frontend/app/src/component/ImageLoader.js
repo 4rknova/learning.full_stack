@@ -18,10 +18,7 @@ class ImageLoader extends Component {
         return (
             <Animated.Image
               onLoad={this.onLoad} {...this.props}
-              style={[
-                { opacity: this.state.opacity },
-                  this.props.style,
-              ]}
+              style={[{ opacity: this.state.opacity }, this.props.style ]}
             />
         );
     }

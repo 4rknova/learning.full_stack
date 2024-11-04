@@ -22,7 +22,12 @@ const ScreenSplash : React.FC<NavigationContainer> = ({navigation}) => {
   return (
       <View style={[styles.container_root]}>
         <View style={[styles.container_logo]}>
-          <ImageLoader style={styles.logo} source={{uri: `data:image/png;base64,${image_logo_light}`}} />
+          <ImageLoader
+            style={styles.logo}
+            source={{
+              uri: `data:${image_logo_light}`,
+            }}
+          />
         </View>
       </View>
   );
@@ -136,7 +141,6 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'blue',
-    border: 'none',
     borderRadius: '5px',
     color: 'white',
     cursor: 'pointer',
