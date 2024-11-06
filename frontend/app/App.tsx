@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput, Button, View, BackHandler, StyleSheet} from 'react-native';
+import {TextInput, StyleSheet, Button, View, BackHandler, ScrollView} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,7 +10,6 @@ import {logo_light} from './src/images.ts';
 const Stack = createNativeStackNavigator();
 
 const ScreenSplash : React.FC<any> = ({navigation}) => {
-
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate('Main', {});
@@ -19,11 +18,11 @@ const ScreenSplash : React.FC<any> = ({navigation}) => {
   }, [navigation]);
 
   return (
-        <LogoScreen source={{ uri: logo_light }} />
+    <LogoScreen source={{ uri: logo_light }} />
   );
 };
 
-const MyStack : React.FC = () => {
+const ScreenStack : React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -36,18 +35,18 @@ const MyStack : React.FC = () => {
   );
 };
 
-const data = [
-  {
-    id: 0,
-    label: 'All',
-    isChecked: false,
-    value: '',
-  },
-];
+interface TaskEntry {
+  id: number;
+  label: string;
+  isChecked: boolean;
+  value: string;
+}
+
+const data : TaskEntry[] = [];
 
 const ScreenMain = () => {
   const [checkBoxes, setCheckBoxes] = useState(data);
-  const [text, onChangeText] = React.useState('');
+  const [text, setText] = React.useState('');
 
   const backAction = () => {
     return true;
@@ -57,9 +56,14 @@ const ScreenMain = () => {
     backAction,
   );
   const onPressSubmit = () => {
+    if (text === '')
+    {
+      return;
+    }
+
     let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text};
     setCheckBoxes([...checkBoxes, newEntry]);
-    console.log('You tapped the button! Added entry ID: ' + checkBoxes[checkBoxes.length - 1].id);
+    setText('');
   };
 
   const handleCheckboxPress = (checked: boolean, id: number) => {
@@ -73,6 +77,7 @@ const ScreenMain = () => {
   return (
     <View style={styles.container_root}>
       <View style={styles.container_list}>
+        <ScrollView style={styles.scrollView}>
         {checkBoxes.map(item => (
             <FilterCheckbox
               id={item.id}
@@ -82,13 +87,14 @@ const ScreenMain = () => {
               onCheckboxPress={handleCheckboxPress}
             />
         ))}
+        </ScrollView>
       </View>
       <View style={styles.container_editor}>
         <SafeAreaProvider>
           <SafeAreaView>
             <TextInput
               style={styles.input}
-              onChangeText={onChangeText}
+              onChangeText={setText}
               value={text}
             />
           </SafeAreaView>
@@ -114,15 +120,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  container_ticker: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  text: {
-    textAlign: 'center',
-    color: '#555',
-  },
   button: {
     backgroundColor: 'blue',
     borderRadius: '5px',
@@ -136,6 +133,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  scrollview:  {
+    flex: 1,
+  },
 });
 
-export default MyStack;
+export default ScreenStack;
