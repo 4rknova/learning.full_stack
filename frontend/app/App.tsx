@@ -77,7 +77,7 @@ const ScreenMain = () => {
   return (
     <View style={styles.container_root}>
       <View style={styles.container_list}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView>
         {checkBoxes.map(item => (
             <FilterCheckbox
               id={item.id}
@@ -132,9 +132,6 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-  },
-  scrollview:  {
-    flex: 1,
   },
 });
 

@@ -35,22 +35,21 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles : any = StyleSheet.create({
   container: {
     margin: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   checkbox: {
-    width: "98%",
+    width: '98%',
     paddingLeft: 4,
     height: 32,
     borderWidth: 1,
     borderBottomLeftRadius: 20,
     borderTopLeftRadius: 20,
     borderBottomRightRadius: 0,
-    borderRadius: "72px",
-    borderStyle: "none",
-    borderColor: "#dedede",
+    borderRadius: '72px',
+    borderColor: '#dedede',
     margin: 0,
     marginTop: 5,
     marginLeft: 5,
