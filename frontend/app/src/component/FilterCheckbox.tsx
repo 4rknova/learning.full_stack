@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleProp, View, Style, StyleSheet} from 'react-native';
+import {StyleProp, View, ViewStyle, StyleSheet} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 interface FilterCheckboxProps {
@@ -30,9 +30,6 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
       onPress={handleCheckboxPress}
       size={24}
       fillColor="#0f0"
-      text={text}
-      iconStyle={{ borderColor: "#fff" }}
-      innerIconStyle={{ borderWidth: 2 }}
     />
     </View>
   );

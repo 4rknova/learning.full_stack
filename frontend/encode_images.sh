@@ -7,5 +7,5 @@ for i in img/*.png
 do
     img=$(basename ${i%%.*})
     echo "Processing $i"
-    echo "export const $img = '$(cat $i | base64 -w 0)';" >> $OUTPUT
+    echo "export const $img : string = 'data:image/png;base64,$(cat $i | base64 -w 0)';" >> $OUTPUT
 done

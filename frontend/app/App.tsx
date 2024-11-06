@@ -3,14 +3,13 @@ import {TextInput, Button, View, BackHandler, StyleSheet} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import ImageLoader from './src/component/ImageLoader.js';
+import LogoScreen from './src/component/LogoScreen.tsx';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
-import {image_logo_light} from './src/images.ts';
+import {logo_light} from './src/images.ts';
 
 const Stack = createNativeStackNavigator();
 
-const ScreenSplash : React.FC<NavigationContainer> = ({navigation}) => {
+const ScreenSplash : React.FC<any> = ({navigation}) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -20,16 +19,7 @@ const ScreenSplash : React.FC<NavigationContainer> = ({navigation}) => {
   }, [navigation]);
 
   return (
-      <View style={[styles.container_root]}>
-        <View style={[styles.container_logo]}>
-          <ImageLoader
-            style={styles.logo}
-            source={{
-              uri: `data:${image_logo_light}`,
-            }}
-          />
-        </View>
-      </View>
+        <LogoScreen source={{ uri: logo_light }} />
   );
 };
 
@@ -124,12 +114,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  container_logo: {
-    flex: 9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
   container_ticker: {
     flex: 1,
     backgroundColor: '#fff',
@@ -145,11 +129,6 @@ const styles = StyleSheet.create({
     color: 'white',
     cursor: 'pointer',
     margin: 5,
-    padding: '10px 20px',
-  },
-  logo: {
-    width: '75%',
-    resizeMode: 'contain',
   },
   input: {
     height: 40,
