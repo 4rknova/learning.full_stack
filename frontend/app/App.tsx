@@ -37,7 +37,7 @@ const ScreenSplash : React.FC<any> = ({navigation}) => {
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: 'http://192.168.0.52:4000/',
+  uri: 'http://192.168.0.52:4000/query',
   cache: new InMemoryCache(),
 });
 
