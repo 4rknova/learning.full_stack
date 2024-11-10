@@ -1,11 +1,24 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput, StyleSheet, Button, View, BackHandler, ScrollView} from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+import {StyleSheet, Text, TextInput, Button, View, BackHandler, ScrollView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 import LogoScreen from './src/component/LogoScreen.tsx';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
 import {logo_light} from './src/images.ts';
+
+const GET_TASKS = gql`
+  {
+    tasks {
+        id
+        text
+        isDone
+    }
+  }
+`;
 
 const Stack = createNativeStackNavigator();
 
@@ -22,30 +35,29 @@ const ScreenSplash : React.FC<any> = ({navigation}) => {
   );
 };
 
+// Initialize Apollo Client
+const client = new ApolloClient({
+  uri: 'http://192.168.0.52:4000/',
+  cache: new InMemoryCache(),
+});
+
 const ScreenStack : React.FC = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Splash" component={ScreenSplash}
-            options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={ScreenMain}
-            options={{ headerShown: false }} />
-      </Stack.Navigator>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Splash" component={ScreenSplash}
+              options={{ headerShown: false }} />
+          <Stack.Screen name="Main" component={ScreenMain}
+              options={{ headerShown: false }} />
+        </Stack.Navigator>
     </NavigationContainer>
+    </ApolloProvider>
   );
 };
 
-interface TaskEntry {
-  id: number;
-  label: string;
-  isChecked: boolean;
-  value: string;
-}
-
-const data : TaskEntry[] = [];
-
 const ScreenMain = () => {
-  const [checkBoxes, setCheckBoxes] = useState(data);
+  const [checkBoxes, setCheckBoxes] = useState([{id:0, label:'test', isChecked:false}]);
   const [text, setText] = React.useState('');
 
   const backAction = () => {
@@ -61,9 +73,11 @@ const ScreenMain = () => {
       return;
     }
 
+    /*
     let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text};
     setCheckBoxes([...checkBoxes, newEntry]);
     setText('');
+    */
   };
 
   const handleCheckboxPress = (checked: boolean, id: number) => {
@@ -74,16 +88,25 @@ const ScreenMain = () => {
     );
   };
 
+  const { loading, error, data } = useQuery( GET_TASKS, { pollInterval: 1000, notifyOnNetworkStatusChange:true });
+
+  if (loading) {
+    return <Text>Loading..</Text>;
+  }
+  if (error) {
+    return <Text>{`${error}`}</Text>;
+  }
+
   return (
     <View style={styles.container_root}>
       <View style={styles.container_list}>
         <ScrollView>
-        {checkBoxes.map(item => (
+          {data.map((item : any) => (
             <FilterCheckbox
               id={item.id}
               text={item.label}
               key={`${item.id}`}
-              isChecked={item.isChecked}
+              isDone={item.isChecked}
               onCheckboxPress={handleCheckboxPress}
             />
         ))}

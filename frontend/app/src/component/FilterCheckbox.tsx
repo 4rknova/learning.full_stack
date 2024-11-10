@@ -5,7 +5,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 interface FilterCheckboxProps {
   id: number;
   text: string;
-  isChecked: boolean;
+  isDone: boolean;
   style?: StyleProp<ViewStyle>;
   onCheckboxPress: (checked: boolean, id: number) => void;
 }
@@ -13,12 +13,12 @@ interface FilterCheckboxProps {
 const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
   id,
   text,
-  isChecked,
+  isDone,
   style,
   onCheckboxPress,
 }) => {
   const handleCheckboxPress = () => {
-    onCheckboxPress(!isChecked, id);
+    onCheckboxPress(!isDone, id);
   };
 
   return (
@@ -26,7 +26,7 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
     <BouncyCheckbox
       style={[styles.checkbox, style]}
       text={text}
-      isChecked={isChecked}
+      isChecked={isDone}
       onPress={handleCheckboxPress}
       size={24}
       fillColor="#0f0"

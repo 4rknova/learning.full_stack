@@ -1,0 +1,27 @@
+# GraphQL schema example
+# https://gqlgen.com/getting-started/
+
+type Task {
+  id: ID!
+  text: String!
+  isDone: Boolean!
+  user: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  tasks: [Task!]!
+}
+
+input NewTask {
+  text: String!
+  userId: String!
+}
+
+type Mutation {
+  createTask(input: NewTask!): Task!
+}
