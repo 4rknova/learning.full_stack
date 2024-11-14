@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, ActivityIndicator, Text, TextInput, Button, View, BackHandler, ScrollView } from 'react-native';
+import {StyleSheet, ActivityIndicator, Text, TextInput, Button, View, BackHandler, ScrollView, Pressable} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -9,18 +9,6 @@ import { useQuery } from '@apollo/react-hooks';
 import LogoScreen from './src/component/LogoScreen.tsx';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
 import {logo_light} from './src/images.ts';
-
-
-interface Task {
-  id: number;
-  text: string;
-  isDone: boolean;
-}
-
-interface SelectedTask {
-  index: number;
-  isDone: boolean;
-}
 
 // noinspection GraphQLUnresolvedReference
 const GET_TASKS = gql`
@@ -55,7 +43,7 @@ const UPD_TASK = gql`
 // noinspection GraphQLUnresolvedReference
 const DEL_TASK = gql`
     mutation DeleteTask($input: String!) {
-        deleteTask(input: { id:$input }) {
+        deleteTask(input:$input) {
             isSuccessful
         }
     }
@@ -99,9 +87,6 @@ const ScreenStack : React.FC = () => {
 };
 
 const ScreenMain = () => {
-  const [checkBoxes, setCheckBoxes] = useState([
-    {id: 0, text: '', isChecked: false},
-  ]);
 
   const {loading, error, data} = useQuery(GET_TASKS, {});
 
@@ -112,9 +97,8 @@ const ScreenMain = () => {
 
   const [input, setInput] = useState('');
   const [selectedTaskToUpdate, setSelectedTaskToUpdate] = useState({id:-1, isDone:false});
-  /*
   const [selectedTaskToDelete, setSelectedTaskToDelete] = useState(-1);
-  */
+
   const [createTask] = useMutation(ADD_TASK, {
     variables: { input: input },
     refetchQueries: [GET_TASKS] ,
@@ -137,9 +121,8 @@ const ScreenMain = () => {
     },
   });
 
-  /*
   const [deleteTask] = useMutation(DEL_TASK, {
-    variables: { input: selectedTaskToUpdate.id },
+    variables: { input: selectedTaskToDelete },
     refetchQueries: [GET_TASKS] ,
     onCompleted: (dat) => {
       console.log(dat);
@@ -151,21 +134,20 @@ const ScreenMain = () => {
 
   useEffect(() => {
     if (selectedTaskToDelete !== -1) {
-      console.log('Deleting task: ', selectedTaskToDelete);
+      console.log('[client] Deleting task: ', selectedTaskToDelete);
       deleteTask().then();
     }
   }, [selectedTaskToDelete, deleteTask]);
-  */
 
   useEffect(() => {
     if (selectedTaskToUpdate.id !== -1) {
-      console.log('Setting task state [', selectedTaskToUpdate.id, ', ', selectedTaskToUpdate.isDone, ']');
+      console.log('[client] Setting task state [', selectedTaskToUpdate.id, ', ', selectedTaskToUpdate.isDone, ']');
       updateTask().then();
     }
   }, [selectedTaskToUpdate, updateTask]);
 
   const handleSubmit = () => {
-    console.log('Adding task: ', input);
+    console.log('[client] Adding task: ', input);
     createTask().then();
   };
 
@@ -191,13 +173,18 @@ const ScreenMain = () => {
         <View style={styles.container_list}>
           <ScrollView>
             {data.tasks.map((item : any) => (
-              <FilterCheckbox
-                id={item.id}
-                text={item.text}
-                key={`${item.id}`}
-                isDone={item.isDone}
-                onCheckboxPress={handleCheckboxPress}
-              />
+              <View key={`view_${item.id}`} style={styles.container_entry}>
+                <FilterCheckbox
+                  id={item.id}
+                  text={item.text}
+                  key={`${item.id}`}
+                  isDone={item.isDone}
+                  onCheckboxPress={handleCheckboxPress}
+                />
+                <Pressable style={styles.button} key={`delete_button_${item.id}`} onPress={()=>setSelectedTaskToDelete(item.id)}>
+                  <Text key={`delete_button_text_${item.id}`} style={styles.button_text}>Delete</Text>
+                </Pressable>
+              </View>
             ))}
           </ScrollView>
         </View>
@@ -228,6 +215,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
+  },
+  container_entry: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  button: {
+    flex: 1,
+    padding: 5,
+    height: 30,
+    verticalAlign: 'middle',
+    marginHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#dedede',
+    marginTop: 7,
+    marginLeft: 7,
+  },
+  button_text: {
+    textAlign: 'center',
   },
   swipeItem: {
     padding: 20,

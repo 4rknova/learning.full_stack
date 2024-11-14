@@ -359,7 +359,7 @@ func (ec *executionContext) field_Mutation_deleteTask_argsInput(
 ) (string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNID2string(ctx, tmp)
+		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
 	var zeroVal string

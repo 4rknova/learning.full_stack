@@ -37,11 +37,12 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
 
 const styles : any = StyleSheet.create({
   container: {
+    flex: 9,
     margin: 1,
     backgroundColor: '#fff',
   },
   checkbox: {
-    width: '98%',
+    width: '100%',
     paddingLeft: 4,
     height: 32,
     borderWidth: 1,
