@@ -13,8 +13,8 @@ type User {
   name: String!
 }
 
-type Query {
-  tasks: [Task!]!
+type Result {
+  isSuccessful: Boolean!
 }
 
 input NewTask {
@@ -22,6 +22,17 @@ input NewTask {
   userId: String!
 }
 
+input UpdatedTask {
+  id: String!
+  isDone: Boolean!
+}
+
+type Query {
+  tasks: [Task!]!
+}
+
 type Mutation {
   createTask(input: NewTask!): Task!
+  updateTask(input: UpdatedTask!): Result!
+  deleteTask(input: ID!): Result!
 }

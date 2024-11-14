@@ -1,20 +1,19 @@
 package tasks
 
 import (
+	"database/sql"
 	"log"
 	database "server/internal/pkg/db/mysql"
 	"server/internal/users"
 )
 
-// #1
 type Task struct {
 	ID     string
 	Text   string
-    IsDone bool
+	IsDone bool
 	User   *users.User
 }
 
-//#2
 func (task Task) Save() int64 {
 	stmt, err := database.Db.Prepare("INSERT INTO Tasks(Text,IsDone) VALUES(?,?)")
 	if err != nil {
@@ -28,28 +27,67 @@ func (task Task) Save() int64 {
 	if err != nil {
 		log.Fatal("Error:", err.Error())
 	}
-	log.Print("Row inserted!")
 	return id
 }
 
-func GetAll() []Task {
-	log.Print("Fetching all tasks..")
-
-	stmt, err := database.Db.Prepare("SELECT id, Text, IsDone FROM Tasks")
+func (task Task) Update() bool {
+	stmt, err := database.Db.Prepare("UPDATE Tasks SET IsDone=? WHERE ID=?")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer stmt.Close()
+	res, err := stmt.Exec(task.IsDone, task.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return count == 1
+}
+
+func (task Task) Delete() bool {
+	stmt, err := database.Db.Prepare("DELETE FROM Tasks WHERE ID=?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	res, err := stmt.Exec(task.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return count == 1
+}
+
+func GetAll() []Task {
+	stmt, err := database.Db.Prepare("SELECT ID, Text, IsDone FROM Tasks")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(stmt *sql.Stmt) {
+		err := stmt.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(stmt)
 	rows, err := stmt.Query()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(rows)
 	var tasks []Task
 	for rows.Next() {
 		var task Task
 		err := rows.Scan(&task.ID, &task.Text, &task.IsDone)
-		if err != nil{
+		if err != nil {
 			log.Fatal(err)
 		}
 		tasks = append(tasks, task)

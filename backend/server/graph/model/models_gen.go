@@ -13,11 +13,20 @@ type NewTask struct {
 type Query struct {
 }
 
+type Result struct {
+	IsSuccessful bool `json:"isSuccessful"`
+}
+
 type Task struct {
 	ID     string `json:"id"`
 	Text   string `json:"text"`
 	IsDone bool   `json:"isDone"`
 	User   *User  `json:"user"`
+}
+
+type UpdatedTask struct {
+	ID     string `json:"id"`
+	IsDone bool   `json:"isDone"`
 }
 
 type User struct {

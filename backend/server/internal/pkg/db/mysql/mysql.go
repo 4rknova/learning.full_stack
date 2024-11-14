@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database/mysql"
@@ -20,7 +21,7 @@ func InitDB() {
 	}
 
 	if err = db.Ping(); err != nil {
- 		log.Panic(err)
+		log.Panic(err)
 	}
 
 	Db = db
@@ -46,7 +47,7 @@ func Migrate() {
 		driver,
 	)
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Fatal(err)
 	}
 }

@@ -46,7 +46,7 @@ func main() {
 
 	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
-	router.Handle("/query", server)
+	router.Handle("/api", server)
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

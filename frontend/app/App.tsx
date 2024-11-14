@@ -1,15 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TextInput, Button, View, BackHandler, ScrollView} from 'react-native';
+import {StyleSheet, ActivityIndicator, Text, TextInput, Button, View, BackHandler, ScrollView } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import {ApolloClient, InMemoryCache, ApolloProvider, useMutation} from '@apollo/client';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import LogoScreen from './src/component/LogoScreen.tsx';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
 import {logo_light} from './src/images.ts';
 
+
+interface Task {
+  id: number;
+  text: string;
+  isDone: boolean;
+}
+
+interface SelectedTask {
+  index: number;
+  isDone: boolean;
+}
+
+// noinspection GraphQLUnresolvedReference
 const GET_TASKS = gql`
   {
     tasks {
@@ -19,6 +32,35 @@ const GET_TASKS = gql`
     }
   }
 `;
+
+// noinspection GraphQLUnresolvedReference
+const ADD_TASK = gql`
+    mutation CreateTask($input: String!) {
+        createTask(input: { text:$input userId:"1"}) {
+            id
+        }
+    }
+`;
+
+// noinspection GraphQLUnresolvedReference
+const UPD_TASK = gql`
+    mutation UpdateTask($input_id: String!, $input_status: Boolean!) {
+        updateTask(input: { id:$input_id isDone:$input_status}) {
+            isSuccessful
+        }
+    }
+`;
+
+
+// noinspection GraphQLUnresolvedReference
+const DEL_TASK = gql`
+    mutation DeleteTask($input: String!) {
+        deleteTask(input: { id:$input }) {
+            isSuccessful
+        }
+    }
+`;
+
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +79,7 @@ const ScreenSplash : React.FC<any> = ({navigation}) => {
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: 'http://192.168.0.52:4000/query',
+  uri: 'http://192.168.0.52:4000/api',
   cache: new InMemoryCache(),
 });
 
@@ -57,104 +99,159 @@ const ScreenStack : React.FC = () => {
 };
 
 const ScreenMain = () => {
-  const [checkBoxes, setCheckBoxes] = useState([{id:0, label:'test', isChecked:false}]);
-  const [text, setText] = React.useState('');
+  const [checkBoxes, setCheckBoxes] = useState([
+    {id: 0, text: '', isChecked: false},
+  ]);
+
+  const {loading, error, data} = useQuery(GET_TASKS, {});
 
   const backAction = () => {
     return true;
   };
-  BackHandler.addEventListener(
-    'hardwareBackPress',
-    backAction,
-  );
-  const onPressSubmit = () => {
-    if (text === '')
-    {
-      return;
-    }
+  BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    /*
-    let newEntry = {id:checkBoxes.length, label:text, isChecked:false, value:text};
-    setCheckBoxes([...checkBoxes, newEntry]);
-    setText('');
-    */
+  const [input, setInput] = useState('');
+  const [selectedTaskToUpdate, setSelectedTaskToUpdate] = useState({id:-1, isDone:false});
+  /*
+  const [selectedTaskToDelete, setSelectedTaskToDelete] = useState(-1);
+  */
+  const [createTask] = useMutation(ADD_TASK, {
+    variables: { input: input },
+    refetchQueries: [GET_TASKS] ,
+    onCompleted: (dat) => {
+      console.log(dat);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const [updateTask] = useMutation(UPD_TASK, {
+    variables: { input_id: selectedTaskToUpdate.id, input_status: selectedTaskToUpdate.isDone},
+    refetchQueries: [GET_TASKS] ,
+    onCompleted: (dat) => {
+      console.log(dat);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  /*
+  const [deleteTask] = useMutation(DEL_TASK, {
+    variables: { input: selectedTaskToUpdate.id },
+    refetchQueries: [GET_TASKS] ,
+    onCompleted: (dat) => {
+      console.log(dat);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  useEffect(() => {
+    if (selectedTaskToDelete !== -1) {
+      console.log('Deleting task: ', selectedTaskToDelete);
+      deleteTask().then();
+    }
+  }, [selectedTaskToDelete, deleteTask]);
+  */
+
+  useEffect(() => {
+    if (selectedTaskToUpdate.id !== -1) {
+      console.log('Setting task state [', selectedTaskToUpdate.id, ', ', selectedTaskToUpdate.isDone, ']');
+      updateTask().then();
+    }
+  }, [selectedTaskToUpdate, updateTask]);
+
+  const handleSubmit = () => {
+    console.log('Adding task: ', input);
+    createTask().then();
   };
 
   const handleCheckboxPress = (checked: boolean, id: number) => {
-    setCheckBoxes(
-      checkBoxes.map(item =>
-        item.id === id ? {...item, isChecked: checked} : item,
-      ),
-    );
+    setSelectedTaskToUpdate({id, isDone:checked});
   };
 
-  const { loading, error, data } = useQuery( GET_TASKS, { pollInterval: 1000, notifyOnNetworkStatusChange:true });
-
-  if (loading) {
-    return <Text>Loading..</Text>;
-  }
   if (error) {
     return <Text>{`${error}`}</Text>;
   }
 
-  return (
-    <View style={styles.container_root}>
-      <View style={styles.container_list}>
-        <ScrollView>
-          {data.map((item : any) => (
-            <FilterCheckbox
-              id={item.id}
-              text={item.label}
-              key={`${item.id}`}
-              isDone={item.isChecked}
-              onCheckboxPress={handleCheckboxPress}
-            />
-        ))}
-        </ScrollView>
-      </View>
-      <View style={styles.container_editor}>
-        <SafeAreaProvider>
-          <SafeAreaView>
+  if (loading) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={[styles.container_loader, styles.horizontal]}>
+          <ActivityIndicator size="large" />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  } else {
+    return (
+      <View style={styles.container_root}>
+        <View style={styles.container_list}>
+          <ScrollView>
+            {data.tasks.map((item : any) => (
+              <FilterCheckbox
+                id={item.id}
+                text={item.text}
+                key={`${item.id}`}
+                isDone={item.isDone}
+                onCheckboxPress={handleCheckboxPress}
+              />
+            ))}
+          </ScrollView>
+        </View>
+        <View style={styles.container_editor}>
             <TextInput
               style={styles.input}
-              onChangeText={setText}
-              value={text}
+              onChangeText={node => {
+                setInput(node);
+              }}
             />
-          </SafeAreaView>
-        </SafeAreaProvider>
-        <Button
-          title="Submit"
-          onPress={onPressSubmit}
-        />
+            <Button title="Submit" onPress={e => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            />
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({
+  container_loader: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+  swipeItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
   container_root: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: '#fff',
   },
   container_list: {
-    flex: 5,
+    flex: 10,
   },
   container_editor: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  button: {
-    backgroundColor: 'blue',
-    borderRadius: '5px',
-    color: 'white',
-    cursor: 'pointer',
-    margin: 5,
+    flexDirection: 'row',
+    padding: 10,
   },
   input: {
-    height: 40,
-    margin: 12,
+    color: '#333',
+    width: '80%',
+    height: '100%',
     borderWidth: 1,
-    padding: 10,
+    marginRight: 10,
   },
 });
 
