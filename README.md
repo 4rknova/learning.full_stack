@@ -2,12 +2,18 @@
 ![Logo](https://github.com/4rknova/learning.full_stack/blob/main/frontend/app/public/images/logo-dark.png?raw=true?raw=true#gh-dark-mode-only)
 ![Logo](https://github.com/4rknova/learning.full_stack/blob/main/frontend/app/public/images/logo-light.png?raw=true#gh-light-mode-only)
 
+
+![Demo](https://github.com/4rknova/learning.full_stack/blob/demo.gif?raw=true)
+
+
 # Brief
+
+## Main Objectives
 
 Create a todo list management app. 
 
 - [x] Use react-native to create a mobile app.
-- [ ] Use graphql to communicate with the back end. (Apollo gql client library)
+- [x]  Use graphql to communicate with the back end. (Apollo gql client library)
 - [ ] create a gql gateway service in go. (minikube)
 - [ ] optional: setup kafka in minikube
 - [ ] if kafka: produce messages for CRUD operations in a topic.
@@ -21,9 +27,10 @@ Create a todo list management app.
 
 If too complex, remove k8s and run everything locally as a start
 
-Other stuff to look into:
+## Miscellaneous
 
-- [ ] grafana
+- [ ] docker multi stage builds
+- [x] grafana
 - [ ] logging
 - [ ] prometheus/thanos for metrics
 - [ ] tempo for tracing
@@ -38,7 +45,3 @@ k8s concepts to look into:
 * volumes
 * volumeMounts
 * secrets
-
-Other:
-
-* docker multi stage builds

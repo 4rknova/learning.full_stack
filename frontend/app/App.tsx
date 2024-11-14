@@ -112,15 +112,15 @@ const ScreenMain = () => {
   const [input, setInput] = useState('');
   const [selectedTaskToUpdate, setSelectedTaskToUpdate] = useState({id:-1, isDone:false});
   const [selectedTaskToDelete, setSelectedTaskToDelete] = useState(-1);
-  const editbox = useRef(null);
+  const editBox = useRef(null);
   const [createTask] = useMutation(ADD_TASK, {
     variables: { input: input },
     refetchQueries: [GET_TASKS] ,
     onCompleted: (dat) => {
       console.log(dat);
       setInput('');
-      if (editbox != null && editbox.current != null){
-        editbox.current.clear();
+      if (editBox != null && editBox.current != null){
+        editBox.current.clear();
       }
     },
     onError: (err) => {
@@ -214,7 +214,7 @@ const ScreenMain = () => {
         </View>
         <View style={styles.container_editor}>
             <TextInput
-              ref={editbox}
+              ref={editBox}
               style={styles.input}
               onChangeText={node => {
                 setInput(node);
