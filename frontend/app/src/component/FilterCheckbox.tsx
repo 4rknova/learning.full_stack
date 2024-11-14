@@ -24,7 +24,8 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
   return (
     <View style={styles.container}>
     <BouncyCheckbox
-      style={[styles.checkbox, style]}
+      style={[styles.checkbox, isDone ? styles.checkbox_checked : styles.checkbox_unchecked, style]}
+      textStyle={styles.checkbox_text}
       text={text}
       isChecked={isDone}
       onPress={handleCheckboxPress}
@@ -37,9 +38,20 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
 
 const styles : any = StyleSheet.create({
   container: {
-    flex: 9,
+    flex: 11,
     margin: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  checkbox_text: {
+    textDecorationLine: 'none',
+  },
+  checkbox_checked: {
+    backgroundColor: '#f2eaea',
+  },
+  checkbox_unchecked: {
+    backgroundColor: 'transparent',
   },
   checkbox: {
     width: '100%',
@@ -48,8 +60,8 @@ const styles : any = StyleSheet.create({
     borderWidth: 1,
     borderBottomLeftRadius: 20,
     borderTopLeftRadius: 20,
-    borderBottomRightRadius: 0,
-    borderRadius: '72px',
+    borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
     borderColor: '#dedede',
     margin: 0,
     marginTop: 5,

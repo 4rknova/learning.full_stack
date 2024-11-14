@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, ActivityIndicator, Text, TextInput, Button, View, BackHandler, ScrollView, Pressable} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {StatusBar, StyleSheet, ActivityIndicator, Text, TextInput, Image, Button, View, BackHandler, ScrollView, Pressable} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -8,7 +8,10 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import LogoScreen from './src/component/LogoScreen.tsx';
 import FilterCheckbox from './src/component/FilterCheckbox.tsx';
-import {logo_light} from './src/images.ts';
+import {logo_light, ui_bin} from './src/images.ts';
+
+const color_background: string = '#006699';
+const color_border: string = '#dedede';
 
 // noinspection GraphQLUnresolvedReference
 const GET_TASKS = gql`
@@ -79,7 +82,18 @@ const ScreenStack : React.FC = () => {
           <Stack.Screen name="Splash" component={ScreenSplash}
               options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={ScreenMain}
-              options={{ headerShown: false }} />
+              options={{
+                headerShown: true,
+                title: 'Tasks',
+                headerStyle: {
+                  backgroundColor: color_background,
+                },
+                headerTitleStyle:{
+                  fontWeight:'bold',
+                },
+                headerBackVisible:false,
+                headerTintColor: '#fff',
+          }} />
         </Stack.Navigator>
     </NavigationContainer>
     </ApolloProvider>
@@ -98,12 +112,16 @@ const ScreenMain = () => {
   const [input, setInput] = useState('');
   const [selectedTaskToUpdate, setSelectedTaskToUpdate] = useState({id:-1, isDone:false});
   const [selectedTaskToDelete, setSelectedTaskToDelete] = useState(-1);
-
+  const editbox = useRef(null);
   const [createTask] = useMutation(ADD_TASK, {
     variables: { input: input },
     refetchQueries: [GET_TASKS] ,
     onCompleted: (dat) => {
       console.log(dat);
+      setInput('');
+      if (editbox != null && editbox.current != null){
+        editbox.current.clear();
+      }
     },
     onError: (err) => {
       console.log(err);
@@ -147,8 +165,10 @@ const ScreenMain = () => {
   }, [selectedTaskToUpdate, updateTask]);
 
   const handleSubmit = () => {
-    console.log('[client] Adding task: ', input);
-    createTask().then();
+    if (input !== '') {
+      console.log('[client] Adding task: ', input);
+      createTask().then();
+    }
   };
 
   const handleCheckboxPress = (checked: boolean, id: number) => {
@@ -170,6 +190,7 @@ const ScreenMain = () => {
   } else {
     return (
       <View style={styles.container_root}>
+        <StatusBar backgroundColor={color_background} />
         <View style={styles.container_list}>
           <ScrollView>
             {data.tasks.map((item : any) => (
@@ -182,7 +203,10 @@ const ScreenMain = () => {
                   onCheckboxPress={handleCheckboxPress}
                 />
                 <Pressable style={styles.button} key={`delete_button_${item.id}`} onPress={()=>setSelectedTaskToDelete(item.id)}>
+                  {/*
                   <Text key={`delete_button_text_${item.id}`} style={styles.button_text}>Delete</Text>
+                  */}
+                  <Image  key={`delete_button_img_${item.id}`} source={{ uri: ui_bin }}  style={styles.button_img}/>
                 </Pressable>
               </View>
             ))}
@@ -190,12 +214,13 @@ const ScreenMain = () => {
         </View>
         <View style={styles.container_editor}>
             <TextInput
+              ref={editbox}
               style={styles.input}
               onChangeText={node => {
                 setInput(node);
               }}
             />
-            <Button title="Submit" onPress={e => {
+            <Button title="Add" onPress={e => {
                 e.preventDefault();
                 handleSubmit();
               }}
@@ -218,26 +243,28 @@ const styles = StyleSheet.create({
   },
   container_entry: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   button: {
     flex: 1,
-    padding: 5,
-    height: 30,
-    verticalAlign: 'middle',
-    marginHorizontal: 10,
-    borderWidth: 1,
-    borderColor: '#dedede',
+    height: 32,
+    marginHorizontal: '2%',
     marginTop: 7,
-    marginLeft: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f2eaea',
+    borderColor: color_border,
+    borderWidth: 1,
+    borderRadius: 50,
   },
   button_text: {
     textAlign: 'center',
   },
-  swipeItem: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  button_img: {
+    width: 12,
+    height: 12,
   },
   container_root: {
     flex: 1,
@@ -249,14 +276,18 @@ const styles = StyleSheet.create({
   },
   container_editor: {
     flexDirection: 'row',
-    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    paddingVertical: '2%',
   },
   input: {
     color: '#333',
     width: '80%',
-    height: '100%',
     borderWidth: 1,
     marginRight: 10,
+    borderRadius: 5,
+    borderColor: color_border,
   },
 });
 
