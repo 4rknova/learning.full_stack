@@ -1,16 +1,14 @@
-
-![Logo](https://github.com/4rknova/learning.full_stack/blob/main/frontend/app/public/images/logo-dark.png?raw=true?raw=true#gh-dark-mode-only)
-![Logo](https://github.com/4rknova/learning.full_stack/blob/main/frontend/app/public/images/logo-light.png?raw=true#gh-light-mode-only)
-
-
-![Demo](https://github.com/4rknova/learning.full_stack/blob/demo.gif?raw=true)
-
+<p align="center">
+<img src="https://github.com/4rknova/learning.full_stack/blob/main/frontend/img/logo_dark.png?raw=true?raw=true#gh-dark-mode-only" alt="logo"/>
+<img src="https://github.com/4rknova/learning.full_stack/blob/main/frontend/img/logo_light.png?raw=true#gh-light-mode-only" alt="logo"/>
+</p>
 
 # Brief
 
-## Main Objectives
+This project is a learning exercise at full stack development.
+The goal is to create a simple to-do task management app. 
 
-Create a todo list management app. 
+## Objectives
 
 - [x] Use react-native to create a mobile app.
 - [x]  Use graphql to communicate with the back end. (Apollo gql client library)
@@ -35,13 +33,18 @@ If too complex, remove k8s and run everything locally as a start
 - [ ] prometheus/thanos for metrics
 - [ ] tempo for tracing
 
-k8s concepts to look into:
+## K8s concepts
 
-* pods
-* deployments
-* statefulSets
-* services
-* ingress
-* volumes
-* volumeMounts
-* secrets
+- [ ] pods
+- [ ] deployments
+- [ ] statefulSets
+- [ ] services
+- [ ] ingress
+- [ ] volumes
+- [ ] volumeMounts
+- [ ] secrets
+
+# Captures
+<p align="center">
+<img src="https://github.com/4rknova/learning.full_stack/blob/main/demo.gif?raw=true" alt="demo"/>
+</p>
