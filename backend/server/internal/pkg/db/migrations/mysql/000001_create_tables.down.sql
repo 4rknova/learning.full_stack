@@ -1,2 +1,0 @@
-DROP TABLE Tasks;
-DROP TABLE Users;
