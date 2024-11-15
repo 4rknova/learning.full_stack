@@ -8,6 +8,7 @@ import (
 	"github.com/golang-migrate/migrate/database/mysql"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"log"
+	"time"
 )
 
 var Db *sql.DB
@@ -15,16 +16,22 @@ var Db *sql.DB
 func InitDB() {
 	log.Print("Initiating database connection..")
 
-	db, err := sql.Open("mysql", "root:pass@tcp(localhost)/todo")
-	if err != nil {
-		log.Panic(err)
-	}
+	for {
+		var db, err = sql.Open("mysql", "root:pass@tcp(todo_db:3306)/todo?parseTime=true")
+		if err != nil {
+			log.Print(err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
 
-	if err = db.Ping(); err != nil {
-		log.Panic(err)
+		if err = db.Ping(); err != nil {
+			log.Print(err)
+			continue
+		} else {
+			Db = db
+			break
+		}
 	}
-
-	Db = db
 }
 
 func CloseDB() error {

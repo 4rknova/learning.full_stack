@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS Tasks(
     UserID INT ,
     FOREIGN KEY (UserID) REFERENCES Users(ID) ,
     PRIMARY KEY (ID)
-);
+    );
