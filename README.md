@@ -3,7 +3,11 @@
 <img src="https://github.com/4rknova/learning.full_stack/blob/main/frontend/img/logo_light.png?raw=true#gh-light-mode-only" alt="logo"/>
 </p>
 
-Monorepo for a simple to-do task management app implemented in React-native, GoLang, GraphQL, SQL
+A simple to-do task management app
+
+This is a monorepo containing the full stack application
+
+Technologies used: React-native, GoLang, GraphQL, SQL, Docker
 
 <p align="center">
 <img src="https://github.com/4rknova/learning.full_stack/blob/main/demo.gif?raw=true" alt="demo"/>
